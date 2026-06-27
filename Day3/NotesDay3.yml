@@ -1,0 +1,246 @@
+📑 Agenda for Week 2 Day 1 - 
+Strings & Arrays in JavaScript, Introduction to Playwright Architecture
+
+🎯 Focus: Strengthen JavaScript fundamentals with strings and arrays, while understanding Playwright architecture basics.
+ 
+📆 Date: 27 June [Saturday]
+ 
+🕝 Session Highlights
+
+ Recap 
+- Key takeaways from the previous session:  
+Introduction to JavaScript, Mastering Variables, Operators, Conditional Statements,
+
+1. String
+* Exploring Methods slice and substring
+* [Practice] Solve String-based Problems
+
+2. Understanding Arrays in JavaScript  
+* Basics of Arrays: What and Why?  
+* Common Methods and Operations on Arrays.  
+
+//BREKAOUT: Array occurance
+
+3. Functions
+* Different types of functions -> Named function, Function Expression/ Anonyuomus Function, Arrow Function, Call back function
+
+//BREAKOUT : Function Types
+
+4. Understanding Playwright Architecture
+* Core Components and How They Interact  
+
+🕡 Wrap Up / Q&A 
+
+📝 Keep your physical notebook and pen handy to sketch out ideas!
+
+
+
+
+Notes :
+------
+
+
+substring()
+
+Difference between one and two arguments
+let str = "Playwright";
+
+console.log(str.substring(4));    // "wright"
+console.log(str.substring(4, 7)); // "wri"
+substring(4) → From index 4 to the end.
+substring(4, 7) → From index 4 up to but not including index 7.
+
+
+
+----------------------------------------------------
+
+
+
+
+
+What is the advantage of having a Callback Function?
+
+A callback function is a function that is passed as an argument to another function and is executed after or when required.
+
+The biggest advantage is:
+
+It allows us to decide what should happen after a particular task is completed without changing the main function.
+
+Without Callback
+
+Suppose your playVideo() function looks like this:
+
+function playVideo() {
+    console.log("Play the YouTube video");
+
+    console.log("Show related videos");
+    console.log("Save video history");
+}
+
+The problem is:
+
+Related videos will always be shown.
+History will always be saved.
+If tomorrow YouTube wants to show advertisements instead, you'll have to modify the playVideo() function.
+
+This makes the function less flexible.
+
+With Callback
+function playVideo(afterPlay1, afterPlay2) {
+
+    console.log("Play the YouTube video");
+
+    afterPlay1();
+    afterPlay2();
+}
+
+function saveHistory() {
+    console.log("Video saved in history");
+}
+
+function showRelatedVideos() {
+    console.log("Show related videos");
+}
+
+playVideo(saveHistory, showRelatedVideos);
+Output
+Play the YouTube video
+Video saved in history
+Show related videos
+
+Now playVideo() doesn't know what should happen next.
+
+It simply says:
+
+"Once I'm done playing the video, I'll execute whatever functions you give me."
+
+This makes the function generic and reusable.
+
+Tomorrow's Requirement
+
+Suppose YouTube changes its requirement.
+
+Instead of showing related videos, it wants to:
+
+Show advertisements
+Show comments
+
+You don't modify playVideo().
+
+Just create new callback functions.
+
+function showAds() {
+    console.log("Show advertisements");
+}
+
+function showComments() {
+    console.log("Show comments");
+}
+
+playVideo(showAds, showComments);
+
+Output
+
+Play the YouTube video
+Show advertisements
+Show comments
+
+Notice that the main function never changed.
+
+Real Automation Example (Playwright)
+
+Imagine you have a login function.
+
+function login(afterLogin) {
+
+    console.log("Logging into the application...");
+
+    afterLogin();
+}
+
+Now different test cases can perform different actions after login.
+
+function createCustomer() {
+    console.log("Create Customer");
+}
+
+function createOrder() {
+    console.log("Create Order");
+}
+
+login(createCustomer);
+
+login(createOrder);
+
+The login code is written once, but reused for multiple scenarios.
+
+Another Real Example
+
+Downloading a file.
+
+function downloadFile(afterDownload) {
+
+    console.log("Downloading file...");
+
+    afterDownload();
+}
+
+Now you can perform different tasks after downloading.
+
+function verifyFile() {
+    console.log("Verify downloaded file");
+}
+
+function uploadFile() {
+    console.log("Upload downloaded file");
+}
+
+downloadFile(verifyFile);
+downloadFile(uploadFile);
+
+Again, the download logic remains unchanged.
+
+Advantages of Callback Functions
+✅ 1. Makes code reusable
+
+One function can be reused in many situations.
+
+✅ 2. Makes code flexible
+
+The main function doesn't need to know what happens next.
+
+✅ 3. Separates responsibilities
+playVideo()
+     │
+     ├── Play the video ✔
+     │
+     ├── Save History (callback)
+     │
+     ├── Show Related Videos (callback)
+     │
+     └── Show Ads (callback)
+
+Each function has one responsibility.
+
+✅ 4. Easy to maintain
+
+If requirements change, only the callback changes—not the main function.
+
+✅ 5. Used heavily in asynchronous programming
+
+Callbacks are the foundation of many asynchronous operations in JavaScript.
+
+Examples:
+
+setTimeout()
+
+setInterval()
+
+addEventListener()
+
+fs.readFile() (Node.js)
+
+Playwright page.waitForResponse()
+Interview Answer
+
+A callback function allows us to pass behavior into another function. This makes the code reusable, flexible, and easier to maintain because the main function focuses only on its primary responsibility, while the callback defines what should happen afterward. Callback functions are widely used in event handling and asynchronous programming in JavaScript.
