@@ -1,0 +1,527 @@
+📑 *Agenda for Week 5 Day 1: TypeScript Fundamentals and Key Features. 
+🎯 [Focus: Deep Dive into TypeScript's Features]  
+
+
+1. Introduction to TypeScript and Datatypes
+
+* What is TypeScript, and Why Use It?  
+* Setting Up a TypeScript Environment.  
+* Basic Syntax and First TypeScript Program.  
+* Overview of Types in TypeScript:  
+* Hands-on: Declaring Variables with Different Types.  
+
+2. Explicit Types & Annotations 
+* Why Use Type Annotations?  
+* Explicitly Defining Function Parameters and Return Types.  
+* Examples:  
+     * Type Inference vs. Explicit Types. 
+
+3. Type Aliases concept in TypeScript  
+* What are Type Aliases and why use them?  
+* Syntax and examples.   
+
+--> Breakout session Handson on TypeScript basics. 
+
+4. Object Literals  
+* Defining and using object types in TypeScript.  
+
+5. Type Assertion  
+* What is Type Assertion?  
+* Examples: Converting unknown types.  
+  
+6. Enums  
+* Understanding Enums: Numeric and String Enums.  
+
+-->Classroom activity on Enums
+
+
+-------------------------------------------------------------
+
+Notes :
+------
+
+TypeScript introduction : 
+-------------------------
+
+TypeScript Installation commands:
+---------------------------------
+
+Installation command :
+
+npm install -D typescript@5.8.3 ts-node@10.9.2 @types/node
+
+Execution command :
+
+One by one :
+
+compile using 
+
+tsc filename.ts
+
+execute after .js file creation :
+node filename.js
+
+To do compilation and execution together use below command:
+tsx filename.ts
+
+
+
+2. Version Check : npx tsc --version works.
+
+Local Project Level Installation :
+--------------------------------
+
+npm install --save-dev typescript
+
+
+------------------------------------------------
+
+ TypeScript datatypes :
+ ----------------------
+  Difference between "any" and "unknown"
+  --------------------------------------
+
+ ✅ any — “Turn Off TypeScript”
+let data: any = "Message received from the server";
+data = 1234;
+data = true;
+
+data.toUpperCase();  // ✅ No error at compile time
+data.push(10);       // ✅ No error
+data();              // ✅ No error
+
+🔴 Problem:
+
+TypeScript does not check anything on any.
+Even wrong operations compile successfully, and your app crashes at runtime.
+
+So "any" means:
+
+"I don't care about type safety."
+
+✅ unknown — “Safe Version of any”
+let value: unknown;
+
+value = 40;
+value = "Hello";
+
+value.toUpperCase(); // ❌ ERROR (compile time)
+
+
+TypeScript blocks you here because:
+
+"I don't know what type this is yet."
+
+Now we check:
+
+if (typeof value === "string") {
+    console.log(value.toUpperCase()); ✅ Allowed
+}
+
+
+✅ Now TypeScript knows it is a string.
+✅ You proved the type — so it allows safe operations.
+
+-----------------------------------------------------------
+
+Real time example for "unknown"  datatype :
+
+=> Reusable Utility Functions
+
+Suppose you're building a common logger:
+
+function logData(data: unknown) {
+
+    if (typeof data === "string") {
+        console.log(data.toUpperCase());
+    }
+}
+
+If you use any, someone can pass:
+
+logData(123);
+
+And it crashes.
+
+With unknown, framework forces validation.
+
+function logData(data: any) {
+
+    if (typeof data === "string") {
+        console.log(data.toUpperCase());
+    }else{
+        console.log(data+"Different datatype");
+        
+    }
+}
+
+//If you use any, someone can pass:
+
+logData(123);
+
+
+//Tuple is typescript way handling array in JS :
+
+let arrayVal : [string,number,boolean,string] = ["Playwright",2026,true,"AprilPW"]
+
+
+/* With any
+
+TypeScript trusts the developer completely.
+
+So even unsafe code is allowed.
+
+With unknown
+
+TypeScript forces the developer to validate before usage.
+
+So unsafe code is blocked at compile time.
+
+This works safely because:
+
+ YOU remembered to validate manually.
+
+Important : But TypeScript did NOT force you to do it.
+
+You could still accidentally write:
+
+function logData(data: any) {
+    console.log(data.toUpperCase());
+}
+
+And TS allows it.
+
+But with unknown
+function logData(data: unknown) {
+    console.log(data.toUpperCase());
+}
+
+TypeScript immediately blocks it.
+
+Compile error:
+
+Object is of type 'unknown'
+
+So with unknown:
+
+ Validation is mandatory.
+
+With any:
+
+ Validation is optional.
+
+any depends on developer discipline.
+
+unknown enforces developer discipline.*/
+
+--------------------------------------------------------------
+
+never datatype :
+----------------
+
+✅ In Playwright, never is used for functions that permanently stop a test when a critical failure happens.
+
+Simple beginner example1 :
+
+function throwError(message: string): never {
+    throw new Error(message);
+}
+
+function checkNumber(num: number) {
+    if (num > 0) {
+        console.log("Positive number");
+    } else {
+        throwError("Number must be positive");
+    }
+}
+
+checkNumber(5);
+checkNumber(-1);
+
+--------------------------------------------------------------------------
+Real Time Example Example2 :
+
+import { test, expect } from "@playwright/test";
+
+// A function that always stops the test
+
+function stopTest(message: string): never {
+    throw new Error(message);  // ❌ Test execution stops here
+}
+
+test("Login test with never example", async ({ page }) => {
+
+    await page.goto("http://leaftaps.com/opentaps/control/main");
+
+    const title = await page.title();
+
+    if (title !== "Login") { // when the title value is false 
+        stopTest("Login page did not load correctly"); // ✅ never
+    }
+
+    // ✅ This line runs ONLY if the title is correct
+    console.log("Test continues safely...");
+});
+
+------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------
+
+Classroom activity on union type :
+ ------------------------------------
+
+- Create a function that accepts only specific payment methods.
+
+- Create a type alias called PaymentMethod that allows only "UPI", "CreditCard", or "PayPal".
+
+- Write a function makePayment that takes a parameter of type PaymentMethod and prints which payment method is chosen.
+
+- Call the function with "UPI" and "CreditCard" as arguments.
+
+--------------------------------------------------------------------------
+
+enum :
+ ------------------------------------
+- Enums are a way to define a set of named constants, making your code more readable and maintainable.
+
+
+Think of enum like a menu in a restaurant:
+
+Instead of customers shouting random dish names, they choose from the menu (fixed options).
+
+The menu items are the named constants (e.g., Menu.Pizza, Menu.Burger).
+
+You can’t order something not on the menu (compiler error).
+
+------------------------------------------------------------------
+
+
+TypeScript Installation command :
+npm install -D typescript@5.8.3 ts-node@10.9.2 @types/node
+
+Execution command :
+tsx filename.ts 
+
+
+
+Explanation for this important command in typescript inorder to avoid version compatibility issue:
+
+npm install -D typescript@5.8.3 ts-node@10.9.2 @types/node
+
+
+Let's break it down.
+
+---
+
+# 1. `npm install`
+
+This tells **npm (Node Package Manager)**:
+
+> "Download and install the required packages for my project."
+
+Example:
+
+Just like installing an app on your phone.
+
+---
+
+# 2. `-D`
+
+`-D` means
+
+--save-dev
+
+
+It tells npm:
+
+> "These packages are needed only while developing the project."
+
+They are **not required when your application is running in production.**
+
+For example:
+
+| Package    | Needed while coding? | Needed after deployment? |
+| ---------- | -------------------- | ------------------------ |
+| TypeScript | ✅ Yes                | ❌ No                     |
+| ts-node    | ✅ Yes                | ❌ No                     |
+| Playwright | ✅ Yes                | ❌ No                     |
+
+---
+
+# 3. `typescript@5.8.3`
+
+This installs the **TypeScript compiler**.
+
+Imagine you wrote:
+
+let name: string = "Ravi";
+
+Node.js understands only JavaScript.
+
+It **cannot understand TypeScript directly.**
+
+So TypeScript converts this
+
+let name: string = "Ravi";
+
+into
+
+let name = "Ravi";
+
+Think of TypeScript as a **translator**.
+
+TypeScript
+      ↓
+Translates
+      ↓
+JavaScript
+      ↓
+Node executes it
+
+Without TypeScript,
+
+tsc
+
+won't work.
+
+---
+
+# 4. `ts-node@10.9.2`
+
+Normally the process is:
+
+```
+loginPage.ts
+      ↓
+tsc
+      ↓
+loginPage.js
+      ↓
+node loginPage.js
+```
+
+This requires **two steps**.
+
+`ts-node` combines them into one.
+
+Instead of
+
+tsc loginPage.ts
+node loginPage.js
+
+you simply run
+
+tsx filrname.ts
+
+(or npx ts-node loginPage.ts)
+
+Internally it does:
+
+```
+loginPage.ts
+      ↓
+Compile
+      ↓
+Run
+```
+
+So **ts-node = TypeScript Compiler + Node.js together.**
+
+---
+
+# 5. `@types/node`
+
+Node has built-in features like
+
+```ts
+console.log()
+
+process.env
+
+fs.readFile()
+
+path.join()
+```
+
+TypeScript doesn't automatically know about these.
+
+`@types/node` teaches TypeScript what these functions are.
+
+Without it,
+
+you'll see errors like
+
+```
+Cannot find name 'process'
+
+Cannot find module 'fs'
+```
+
+After installing it,
+
+TypeScript understands
+
+```ts
+process.env.USER
+```
+
+and gives IntelliSense.
+
+Think of it as a **dictionary** for Node.js.
+
+---
+
+# A simple analogy 🚗
+
+Imagine you have a book written in **French**, but your friend only understands **English**.
+
+* **TypeScript** = The French book.
+* **JavaScript** = The English translation.
+* **TypeScript Compiler (`tsc`)** = The translator.
+* **Node.js** = The friend who can only read English.
+* **ts-node** = A live interpreter who translates and reads the book to your friend at the same time.
+
+Without `ts-node`:
+
+```
+French Book
+    ↓
+Translator
+    ↓
+English Book
+    ↓
+Friend Reads
+```
+
+With `ts-node`:
+
+```
+French Book
+    ↓
+Interpreter
+    ↓
+Friend Understands Immediately
+```
+
+---
+
+As a Playwright developer, this is an important concept to remember:
+
+* **`typescript`** → Converts `.ts` files to `.js`.
+* **`node`** → Runs JavaScript (`.js`) files.
+* **`ts-node`** → Runs TypeScript (`.ts`) files directly without creating a separate `.js` file first.
+* **`@types/node`** → Gives TypeScript knowledge of Node.js APIs like `fs`, `path`, `process`, and `Buffer`.
+
+Understanding this relationship will also help you answer common Playwright and SDET interview questions about how TypeScript projects are executed.
+
+
+----------------------------------
+
+TypeScript 5.x version that is compatible with ts-node 10.9.2.
+
+| ts-node | TypeScript | Compatible? |
+| ------- | ---------- | ----------- |
+| 10.9.2  | 5.5        | ✅ Yes       |
+| 10.9.2  | 5.7        | ✅ Yes       |
+| 10.9.2  | 5.8.3      | ✅ Yes       |
+| 10.9.2  | 6.x        | ❌ May break |
