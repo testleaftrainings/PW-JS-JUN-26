@@ -1,0 +1,398 @@
+📑 **Agenda for Week 5 Day 2: OOPs in TypeScript
+
+🎯 [Focus: Mastering Object-Oriented Programming Concepts in TypeScript]
+
+📆 [19th July, 2026 Sunday]
+
+🕝 Session Highlights
+
+⿡ Recap
+Quick review of previous learnings.
+
+1. Class & Objects
+
+Understanding the basics of classes and objects in TypeScript.
+Examples: Creating and using classes and objects.
+
+2. Constructors
+
+Role of constructors in initializing objects.
+Examples: Using parameterized and default constructors.
+
+Classroom Activity on class, porperties, methods and constructor.
+
+3. Access Modifiers and Single Inheritance
+
+Understanding public, private, and protected access modifiers and Single Inheritance.
+Examples: Controlling access to class properties and methods.
+
+
+---
+
+Notes 
+
+Class and Object:
+
+
+Real life example of Class and Object, Properties and Methods:
+
+###  What is a *Class*?
+
+A *class* is like a *blueprint* or *template* for creating something.
+
+Example with application login :
+-----------------------------------
+
+property :
+---------
+Represents the information or data related to a particular page or object
+(e.g., username, password, URL).
+
+method :
+-------- 
+Represents the actions or operations performed on that page or object
+(e.g., fill a field, click a button, submit a form).
+
+******************************************************************************************
+
+Sample Program :
+--------------
+
+
+
+****************************************************************************************
+Constructor:
+
+Definition
+A constructor in TypeScript is a method named constructor() that runs once at the time of object creation and sets up the initial state of the object.
+Or a Special method to initialize the object
+
+*******************************************************************************************
+
+
+class LoginPage{
+
+//Properties: (Specific class related data)
+browserName = "Chrome"
+url = "https://leaftaps.com/opentaps/control/main"
+username = "democsr2"
+password = "crmsfa"
+
+//Method : (Specific class related actions )
+launch(){
+console.log("Launch the browser Chrome")
+}
+
+loadur(){
+console.log("Load the url")
+}
+
+fill(){ // Method block--> block of code to perform an action
+
+//Actionables
+//fill method
+//use the properties "username" and "password" to perform the action to fill the login form
+
+console.log("Fill username and password in the text box")
+
+
+}
+
+click(){
+//Actionables
+//click method
+
+console.log("Click the submit button")
+
+}
+}
+
+
+const lp = new LoginPage() // ✔️ Memory is allocated //syntax to create an object(reference/ instance/copy) for a class to call the methods(actionable blocks) inside the class 
+
+lp.launch()
+lp.loadurl()
+lp.fill()
+lp.click()
+
+
+---
+
+class WelcomePage{
+click(){
+//Actionables
+click method
+}
+}
+
+
+//Difference between function block and a method block :
+------------------------------------------------------
+
+=> A function is independent.
+
+=> A method belongs to an object/class.
+
+---
+
+A function is like opening independent tea shops without branding.
+
+A method is like opening a branded cafe chain where everything related stays together — ingredients, process, billing, staff, standards.
+Methods make applications more organized, reusable, readable, and scalable.
+
+---
+
+Function :
+---
+Imagine opening small tea/coffee shops independently in different places.
+
+No common branding
+No shared standards
+Each shop works independently
+Sugar, coffee powder, setup may vary everywhere
+
+This is like a function.
+
+Independent behavior.
+
+makeCoffee();
+payBill();
+takeOrder();
+
+All are separate.
+
+------------------------
+Method
+----
+
+Now imagine opening cafes under one brand like Cafe Coffee Day CCD.
+
+Everything is connected to the brand:
+
+Same coffee powder
+Same logo
+Same process
+Same menu
+Easier to scale
+More organized
+
+This is like a method inside a class/object.
+
+cafe.makeCoffee();
+cafe.takeOrder();
+cafe.payBill();
+
+Now all actions belong to the cafe.
+
+“properties like coffee powder, sugar are branded and related”
+
+This maps perfectly to:
+
+class CafeCoffeeDay {
+
+   coffeePowder = "CCD-CoffeePowder";
+   sugar = "CCD-Sugar";
+
+   makeCCDCoffee() {
+      console.log(this.coffeePowder);
+   }
+}
+
+Here:
+
+Properties → coffee powder, sugar
+Methods → makeCoffee()
+
+Everything stays related inside one object.
+
+Scalability Point (Very Important)
+
+With methods/classes:
+
+✅ More organized
+✅ Better readability
+✅ Easier maintenance
+✅ Easier scaling for large applications
+
+That is exactly why frameworks like Playwright use methods:
+
+
+| Function        | Method                   |
+| --------------- | ------------------------ |
+| Independent     | Attached to object/class |
+| Called directly | Called using object      |
+| `add()`         | `page.click()`           |
+| General utility | Object behavior          |
+
+
+
+
+AccessModifiers:
+----------------
+
+1. public : can be accessed inside and outside of the class
+2. protected: can be accessed inside the class as well as the related class --> relationship--> inherit
+3. private: not accessible outisde the class --> give permission to access or to rewrite "get" and "set"
+4. readonly: constant/final --> cannot change the assigned value
+5. static: belongs to the class and not to the object --> can be accessed without creating the object of the class.
+
+🔹 When do we use static in a TypeScript framework?
+
+We use static when the data or behavior is:
+
+✅ Common for the entire framework
+✅ Does NOT depend on object state
+✅ Utility / helper / configuration
+✅ Shared across tests, pages, or services
+
+1️⃣ Static for Constants & Configuration
+📌 Use case
+
+URLs
+Timeouts
+Environment names
+Browser types
+
+class Config {
+  static BASE_URL = "https://leaftaps.com";
+  static TIMEOUT = 5000;
+}
+
+Usage (no object needed)
+await page.goto(Config.BASE_URL);
+
+
+✔ Single source of truth
+✔ Easy to maintain
+
+*****************************************************************************************
+About super keyword :
+
+### `super` keyword in TypeScript — Simple & Clear Definition
+
+In **TypeScript (and JavaScript)**, the **`super` keyword** is used in a **child (derived) class** to **access the parent (base) class**.
+
+It is mainly used for **two purposes**:
+
+---
+
+## 1️⃣ Calling the Parent Class Constructor
+
+When a class **extends** another class, the child class **must call `super()`** before using `this`.
+
+### ✅ Definition
+
+> **`super()` calls the constructor of the parent class.**
+
+### Example
+
+```ts
+class LoginPage {
+  username: string;
+
+  constructor(username: string) {
+    this.username = username;
+  }
+}
+
+class DashboardPage extends LoginPage {
+  role: string;
+
+  constructor(username: string, role: string) {
+    super(username); // calls parent constructor
+    this.role = role;
+  }
+}
+
+const dp = new DashboardPage("admin", "manager");
+```
+
+📌 **Important rule**
+👉 `super()` **must be the first statement** in the child constructor.
+
+---
+
+## 2️⃣ Accessing Parent Class Methods or Properties
+
+### ✅ Definition
+
+> **`super.methodName()` is used to call a method from the parent class.**
+
+### Example
+
+```ts
+class BasePage {
+  navigate() {
+    console.log("Navigating to page");
+  }
+}
+
+class HomePage extends BasePage {
+  openHome() {
+    super.navigate(); // calling parent method
+    console.log("Home page opened");
+  }
+}
+
+const home = new HomePage();
+home.openHome();
+```
+
+---
+
+## When Do We Use `super`? (Real-Time Use Case)
+
+Since you work with **Playwright + Page Object Model**, this is very common 👇
+
+```ts
+class BasePage {
+  protected page;
+
+  constructor(page) {
+    this.page = page;
+  }
+
+  async click(locator: string) {
+    await this.page.click(locator);
+  }
+}
+
+class LoginPage extends BasePage {
+  constructor(page) {
+    super(page); // pass page to BasePage
+  }
+
+  async login() {
+    await this.click("#login");
+  }
+}
+```
+
+🔹 `super(page)` passes the Playwright `page` object to the base class
+🔹 Avoids duplicate code
+🔹 Improves framework design
+
+---
+
+## Definition
+
+> **The `super` keyword in TypeScript is used to call the parent class constructor and access parent class methods or properties from a child class.**
+
+-------------------------------------------------------------------------------------
+
+faker library installation :
+
+npm install @faker-js/faker
+
+
+
+
+
+function sample(){
+
+console.log("Hello")
+
+}
+
+sample()
+
