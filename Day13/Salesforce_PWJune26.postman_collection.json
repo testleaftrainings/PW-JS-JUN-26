@@ -1,0 +1,175 @@
+{
+  "info": {
+    "_postman_id": "398c6614-4095-43bf-8927-3873e5d2efb6",
+    "name": "Salesforce_PWJune26",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44448055",
+    "_collection_link": "https://go.postman.co/collection/44448055-398c6614-4095-43bf-8927-3873e5d2efb6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Generate_Token",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "client_id",
+              "type": "text",
+              "uuid": "dd87c47e-f3b2-4561-8ddb-d5e43c7546b0",
+              "value": "{{salesforce_consumer_key_193b}}"
+            },
+            {
+              "key": "client_secret",
+              "type": "text",
+              "uuid": "e7c7df8a-4498-4c44-9de7-891ddf6624d1",
+              "value": "06F3A5498B5A56CC0FB13624BBE1D696F84F4C15920DB47E8A96E29E1CF2C109"
+            },
+            {
+              "key": "username",
+              "type": "text",
+              "uuid": "707f1aa3-097b-4eee-9d80-be0b1da19219",
+              "value": "ravindran.ramdas@testleaf.com"
+            },
+            {
+              "key": "password",
+              "type": "text",
+              "uuid": "cfd47818-217e-4387-b5c0-d4ec4a54ab33",
+              "value": "Ravi@testleaf#123"
+            },
+            {
+              "key": "grant_type",
+              "value": "password",
+              "type": "text",
+              "uuid": "2cbd2a0d-d8c3-41be-a8a4-261164c1b354"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://login.salesforce.com/services/oauth2/token",
+          "protocol": "https",
+          "host": [
+            "login",
+            "salesforce",
+            "com"
+          ],
+          "path": [
+            "services",
+            "oauth2",
+            "token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create_Lead",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{auth_secret_153n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n\r\n{\r\n\"Salutation\":\"Mr.\",\r\n\"FirstName\":\"Ravindran\",\r\n\"LastName\":\"R-Jun26\",\r\n\"Company\":\"Testleaf_ABC\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://testleaf22-dev-ed.develop.my.salesforce.com/services/data/v65.0/sobjects/Lead/",
+          "protocol": "https",
+          "host": [
+            "testleaf22-dev-ed",
+            "develop",
+            "my",
+            "salesforce",
+            "com"
+          ],
+          "path": [
+            "services",
+            "data",
+            "v65.0",
+            "sobjects",
+            "Lead",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Fetch_Request",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{salesforce_access_token_153n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://testleaf22-dev-ed.develop.my.salesforce.com/services/data/v65.0/sobjects/Lead/00QNS00000vPuRC2A0",
+          "protocol": "https",
+          "host": [
+            "testleaf22-dev-ed",
+            "develop",
+            "my",
+            "salesforce",
+            "com"
+          ],
+          "path": [
+            "services",
+            "data",
+            "v65.0",
+            "sobjects",
+            "Lead",
+            "00QNS00000vPuRC2A0"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "salesforce_consumer_key_193b",
+      "secret": true
+    },
+    {
+      "key": "salesforce_access_token_1063",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_153n",
+      "secret": true
+    },
+    {
+      "key": "salesforce_access_token_153n",
+      "secret": true
+    }
+  ]
+}

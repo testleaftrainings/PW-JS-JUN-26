@@ -1,0 +1,181 @@
+Using playwright co-pilot and MCP do pls follow below steps :
+
+In the termninal uss :
+
+npm init playwright@latest
+
+Step 1 — Install Playwright Test (latest) 
+npm install -D @playwright/test@latest 
+Confirm package.json has @playwright/test in devDependencies. 
+
+Step 2 — Initialize the agents 
+In the project root run (choose the client you will use). Example for VS Code loop: 
+npx playwright init-agents --loop=vscode
+
+Use "planner agent" and give below prompt to generate the test plan 
+
+BaseURL :
+
+http://leaftaps.com/opentaps/control/main
+
+Use the below credentials :
+
+Username : democsr2
+Password : crmsfa
+
+Create a new lead in a below page
+
+http://leaftaps.com/crmsfa/control/createLeadForm
+
+
+Ones after the planner is ready change to "generator agent" and attach the planner to generate the code 
+If the generated code has any issue use "healer agent" to fix that same
+
+--------------------------------------------------------------------------------
+
+## Step 1 – Create a Playwright Project
+
+```bash
+npm init playwright@latest
+```
+
+This will:
+
+* Create a Playwright project
+* Install `@playwright/test`
+* Create `playwright.config.ts`
+* Install browsers (if selected)
+* Create sample tests
+
+> **Note:** If you use `npm init playwright@latest`, you do **not** need to run `npm install -D @playwright/test@latest` immediately afterward because it is already installed.
+
+If you simply want to upgrade to the latest version later, then run:
+
+```bash
+npm install -D @playwright/test@latest
+```
+
+---
+
+## Step 2 – Verify Installation
+
+Open `package.json` and confirm:
+
+```json
+"devDependencies": {
+  "@playwright/test": "^latest-version"
+}
+```
+
+---
+
+## Step 3 – Initialize Playwright Agents
+
+From the project root:
+
+```bash
+npx playwright init-agents --loop=vscode
+```
+
+This configures the Planner, Generator, and Healer agents for the VS Code loop.
+
+---
+
+## Step 4 – Use the Planner Agent
+
+Select the **Planner Agent** and provide the following prompt:
+
+```text
+Base URL:
+http://leaftaps.com/opentaps/control/main
+
+Credentials:
+Username: democsr2
+Password: crmsfa
+
+Scenario:
+1. Login to the application.
+2. Navigate to CRM/SFA.
+3. Navigate to Create Lead.
+4. Create a new lead.
+5. Validate that the lead was created successfully.
+
+Create a detailed Playwright test plan with:
+- Preconditions
+- Test steps
+- Expected results
+- Suggested locators
+- Assertions
+```
+
+---
+
+## Step 5 – Generate the Automation Code
+
+Once the planner finishes:
+
+* Switch to the **Generator Agent**
+* Attach the generated test plan
+* Ask it to generate:
+
+  * Page Object Model
+  * Test file
+  * Locators
+  * Assertions
+  * Best Playwright practices
+
+---
+
+## Step 6 – Review and Execute
+
+Run:
+
+```bash
+npx playwright test
+```
+
+---
+
+## Step 7 – Use the Healer Agent
+
+If there are failures:
+
+* Switch to the **Healer Agent**
+* Attach the failing test and error output
+* Ask it to fix the issue while preserving the test intent
+
+---
+
+## Recommended Agent Workflow
+
+```text
+Planner Agent
+        │
+        ▼
+Generates Test Plan
+        │
+        ▼
+Generator Agent
+        │
+        ▼
+Generates Playwright Code
+        │
+        ▼
+Run Tests
+        │
+        ▼
+Tests Passed?
+   │            │
+  Yes          No
+   │            ▼
+ Finish     Healer Agent
+                 │
+                 ▼
+         Updated Code
+                 │
+                 ▼
+          Run Tests Again
+```
+
+
+ Planner → Generator → Healer workflow is the intended way to use the Playwright agents with an MCP-enabled client like VS Code. The only adjustment is to avoid reinstalling `@playwright/test` immediately after `npm init playwright@latest` unless you specifically want to upgrade it.
