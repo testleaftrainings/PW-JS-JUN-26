@@ -1,0 +1,525 @@
+📑 **Agenda for Week 8 Day 1: Jira Integration, Test Annotation, Custom Fixture in POM
+🎯 [Focus: Jira Integration, Custom Fixture and Framework Walkthrough]
+
+📆 [08th August Saturday]
+
+🕝 Session Highlights
+
+⿡ Recap
+Quick review of previous learnings.
+
+1. Jira Integration
+Linking test results with Jira issues.
+Automating status updates and reporting.
+
+Breakout session for JIRA Bug Creation
+
+2. Hooks Test Annotation
+* Different test annotation used as part of testcase execution.
+
+3. Test Annotations
+* Enhancing test readability and control using annotations.
+* Examples: Skipping, focusing, or tagging specific tests.
+
+Break + Breakout
+
+4. Custom Fixture
+Creating reusable test setup using custom fixtures.
+Implementing the same in POM.
+Examples: Injecting test data, context, or utilities.
+
+5. Playwrigh Framework Walkthrough
+
+
+🕡 Wrap Up / Q&A
+
+📝 Keep your physical notebook and pen handy to sketch out ideas and test workflows!
+
+-----------------------------------------------------------------------------------------------
+
+Notes :
+
+Jira :
+-----
+
+
+1. Manuallly Create a bug in JIRA
+2. Creating a bug using POSTMAN
+
+1. Endpoint :
+
+https://manual-testing-demoproject.atlassian.net => your domain
+
+ /rest/api/2/issue => specific modules to create an issue
+
+Authorization
+
+2. basic auth :
+
+username : jira account id
+password : token
+
+
+click on profile -> account settings -> secuirity tab -> API token
+
+
+3.  Creating a bug using Playwright with API
+
+
+
+
+
+1. Axios → auth is a BUILT-IN FEATURE
+
+In Axios:
+
+auth: {
+  username: "email",
+  password: "token"
+}
+
+👉 Axios automatically converts this into:
+
+Authorization: Basic base64(username:password)
+
+So internally, Axios is doing:
+
+headers: {
+  Authorization: "Basic xxxxxxxxx"
+}
+✅ Equivalent Axios code (manual way)
+
+You could ALSO write:
+
+headers: {
+  "Authorization": "Basic " + Buffer.from("email:token").toString("base64")
+}
+
+👉 Same result as auth:
+👉 But auth: is cleaner
+
+---
+
+## 🔹 What is `testInfo` in Playwright?
+
+`testInfo` is an **object automatically provided by Playwright** that contains **complete runtime information about a test execution**.
+
+👉 Think of `testInfo` as a **report card of the test**.
+
+---
+
+## 🔹 Where does `testInfo` come from?
+
+In hooks like:
+
+```ts
+test.afterAll(async ({}, testInfo) => {
+  await logADefectInJira(testInfo);
+});
+```
+
+Playwright **injects `testInfo` for you**.
+
+You **do NOT create it**
+You **do NOT import it here**
+
+Playwright does it internally.
+
+---
+
+## 🔹 Why `{}` as the first parameter?
+
+Normally hooks receive **fixtures** first:
+
+```ts
+async ({ page }, testInfo) => {}
+```
+
+But in `afterAll`:
+
+* You **don’t need page**
+* You **only need testInfo**
+
+So you write:
+
+```ts
+async ({}, testInfo) => {}
+```
+
+👉 `{}` means:
+
+> “I’m ignoring all fixtures”
+
+---
+
+## 🔹 What does `testInfo` contain?
+
+`testInfo` is of type:
+
+```ts
+TestInfo
+```
+
+(imported in your helper file)
+
+It contains **everything about the test run**.
+
+---
+
+## 🔹 Important `testInfo` Properties (REAL USE)
+
+### ✅ 1️⃣ `testInfo.status`
+
+```ts
+testInfo.status
+```
+
+Possible values:
+
+* `"passed"`
+* `"failed"`
+* `"timedOut"`
+* `"skipped"`
+
+👉 You used this correctly:
+
+```ts
+if (testinfo.status === "failed" || testinfo.status === "timedOut")
+```
+
+---
+
+### ✅ 2️⃣ `testInfo.title`
+
+```ts
+testInfo.title
+```
+
+Returns:
+
+```
+Test to record tracing a specific bug - YourName
+```
+
+👉 Perfect for **Jira bug summary**
+
+---
+
+### ✅ 3️⃣ `testInfo.error`
+
+testInfo.error
+```
+
+Contains:
+
+* Error message
+* Stack trace
+* Assertion failure
+
+👉 You used it for **Jira description** 💯
+
+---
+
+### ✅ 4️⃣ `testInfo.attachments`
+
+testInfo.attachments
+
+Contains:
+
+* Screenshots
+* Videos
+* Traces
+
+👉 Can be uploaded to Jira later
+
+---
+
+### ✅ 5️⃣ `testInfo.outputDir`
+
+testInfo.outputDir
+
+Path to:
+
+```
+test-results/...
+```
+
+Used for **custom reporters**
+
+---
+
+## 🔹 Flow in YOUR Code (End-to-End)
+
+### What actually happens?
+
+1️⃣ Test runs
+2️⃣ Test **fails** (Salesforce / locator / timeout)
+3️⃣ Playwright records:
+
+* Status
+* Error
+* Screenshot
+* Trace
+  4️⃣ `afterAll` hook executes
+  5️⃣ Playwright **passes `testInfo`**
+  6️⃣ `logADefectInJira(testInfo)` is called
+  7️⃣ Jira bug is created using:
+* `testInfo.title`
+* `testInfo.status`
+* `testInfo.error`
+
+👉 **Zero manual intervention**
+
+---
+
+## 🔹 Why `afterAll` is a Smart Choice
+
+| Option      | Result                       |
+| ----------- | ---------------------------- |
+| `afterEach` | ❌ Creates multiple Jira bugs |
+| `afterAll`  | ✅ One clean Jira bug         |
+| Inside test | ❌ Pollutes test logic        |
+| Reporter    | ✅ Advanced (next level)      |
+
+
+---
+
+## 🔹 One-Line Definition 
+
+> **`testInfo` is a Playwright-provided runtime object that contains execution status, errors, metadata, and artifacts of a test.**
+
+---
+
+
+# Test Annotation : Hooks
+---
+
+--> Control the behaviour of the execution.
+
+hooks -> The execution flow before and after the actual test execution.
+------
+test.beforeAll --> before all test it will be executed
+test.beforeEach --> before each test it will be executed
+test.afterEach -->  after each test it will be executed
+test.afterAll --> after all test it will be executed
+
+
+
+Other Test Annotation 
+---
+
+test.only --> focus on a specific test.
+test.skip --> ignore the test from execution
+test.fixme --> track and know failures that are yet tp be fixed
+test.fail --> for negative testing --> test has to fail is the expectation
+test.slow --> triple the timeout of the tests execution --> 30 s --> 60 s for the entire test execution
+test.describe --> grouping the test depending on the status of the other test.
+test.use -->use the functionalities
+
+----------------------------------------
+
+``ts
+import { test, expect } from "@playwright/test";
+
+/**
+ * =========================
+ * test.skip()
+ * =========================
+ * Purpose:
+ * - Do NOT execute the test at all
+ * - Used when environment / feature is NOT ready
+ */
+test.skip('Skip when environment is not ready', async ({ page }) => {
+  await page.goto('http://leaftaps.com/opentaps/control/main');
+
+  await page.locator('#username').fill('democsr');
+  await page.locator('#password').fill('crmsfa');
+  await page.locator('.decorativeSubmit').click();
+  await page.locator('text=CRM/SFA').click();
+});
+
+
+/**
+ * =========================
+ * test.fixme()
+ * =========================
+ * Purpose:
+ * - Test is known to be broken or flaky
+ * - Acts as a reminder to FIX later
+ * - Test will be skipped, but marked as "needs fixing"
+ */
+test.fixme('Test is under repair / flaky', async ({ page }) => {
+  await page.goto('http://leaftaps.com/opentaps/control/main');
+
+  await page.locator('#username').fill('democsr');
+  await page.locator('#password').fill('crmsfa');
+  await page.locator('.decorativeSubmit').click();
+  await page.locator('text=CRM/SFA').click();
+});
+
+
+/**
+ * =========================
+ * test.fail()
+ * =========================
+ * Purpose:
+ * - Test WILL run
+ * - Failure is EXPECTED due to a known bug
+ * - Failure will NOT break CI
+ */
+test.fail('Known bug: CRM link not visible', async ({ page }) => {
+  await page.goto('http://leaftaps.com/opentaps/control/main');
+
+  await page.locator('#username').fill('democsr');
+  await page.locator('#password').fill('crmsfa');
+  await page.locator('.decorativeSubmit').click();
+
+  // Known issue: locator fails
+  await expect(page.locator('text=CRM/SFA')).toBeVisible();
+});
+
+
+/**
+ * =========================
+ * test.slow()
+ * =========================
+ * Purpose:
+ * - Mark test as slow
+ * - Doubles the default timeout
+ */
+test('Slow test example (timeout increased)', async ({ page }) => {
+
+  test.slow(); // increases timeout (approx 2x default)
+
+  await page.goto('http://leaftaps.com/opentaps/control/main');
+
+  await page.locator('#username').fill('democsr');
+  await page.locator('#password').fill('crmsfa');
+
+  await page.locator('.decorativeSubmit').click();
+
+  await page.locator('text=CRM/SFA').click();
+});
+```
+
+---
+
+##  Simple Explanation 
+
+###  `test.skip()`
+
+>  Don’t run this test at all
+
+* Used when:
+
+  * Environment is down
+  * Feature not implemented
+* Result in report: **Skipped**
+
+---
+
+###  `test.fixme()`
+
+>  This test is broken – fix it later
+
+* Same as skip
+* But tells the **team**:
+
+  > “This test needs fixing”
+* Very useful for flaky tests
+
+---
+
+###  `test.fail()`
+
+>  Run the test, but failure is expected
+
+* Test **executes**
+* If it fails → ✔ expected
+* If it passes → ⚠ unexpected (bug may be fixed!)
+
+✅ Real Project Use Cases
+1️⃣ Known Bug in Application
+test.fail("Login button disabled issue", async () => {
+
+👉 Example:
+
+Dev team says: “Bug exists”
+
+You don’t want pipeline to fail
+
+✔️ Use test.fail()
+
+2️⃣ Temporary Bug (Waiting for Fix)
+
+Feature broken in current build
+
+Fix coming in next sprint
+
+✔️ Mark test as fail instead of deleting it
+
+3️⃣ CI/CD Stability
+
+👉 Without test.fail():
+
+Pipeline ❌ fails
+
+Noise in reports
+
+👉 With test.fail():
+
+Pipeline ✅ stable
+
+Still tracking bug
+
+4️⃣ Bug Verification Scenario
+test.fail("BUG-123: CRM link issue", async () => {
+
+👉 When bug gets fixed:
+
+Test will PASS unexpectedly
+
+Playwright marks it ❌ (unexpected pass)
+
+➡️ This alerts you:
+
+"Bug is fixed — remove test.fail() now"
+
+🔥 Golden Rule (Very Important)
+test.fail() is NOT to skip test
+test.fail() is to TRACK known failures
+
+---
+
+###  `test.slow()`
+
+>  This test needs more time
+
+* Increases timeout
+* Useful for:
+
+  * Slow APIs
+  * Heavy pages
+  * Large uploads/downloads
+
+---
+
+##  Quick Memory Table
+
+| Annotation   | Runs? | Purpose                         |
+| ------------ | ----- | ------------------------------- |
+| `test.skip`  | ❌ No  | Environment / feature not ready |
+| `test.fixme` | ❌ No  | Broken / flaky test             |
+| `test.fail`  | ✅ Yes | Known bug                       |
+| `test.slow`  | ✅ Yes | Needs more time                 |
+
+
+-----------------------------------------------------------------------------------------
+
+Test case tagging:
+---------------------
+
+
+npx playwright test --grep "@regression"
+
+-----------------------------
