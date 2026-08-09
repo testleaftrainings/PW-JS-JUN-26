@@ -1,0 +1,17 @@
+📑 Agenda for Week 8 Day 2: Playwright Framework
+
+🎯 Focus: Understanding core concepts of Playwright Framework
+
+📆 09th August, Sunday
+
+1. GitActions & CI Integration
+Setting up Playwright tests to run in Continuous Integration (CI) pipelines.
+
+Examples: Configuring GitHub Actions to execute tests on code commits and pull requests.
+
+2. Playwright Framework Best Practices
+Discussing best practices for structuring and maintaining Playwright test suites.
+
+🕡 Wrap Up / Q&A
+
+---
